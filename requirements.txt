@@ -2,3 +2,4 @@ streamlit
 timezonefinder
 pandas
 requests
+pytz
