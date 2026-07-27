@@ -7,7 +7,7 @@ from utils.config import CATEGORY_ORDER
 from utils.config import ICON_CATEGORIES
 from utils.icon_mapping import group_similar_hours, get_ordered_icons
 
-def display_icons(categories):
+def display_icons(categories, category_widths=None):
     """Render icons as images using their category as folder."""
     icon_to_category = {}
     for cat, icons in categories.items():
@@ -16,7 +16,7 @@ def display_icons(categories):
 
     base_path = "icons/"
     icon_paths = []
-    for icon in get_ordered_icons(categories):
+    for icon in get_ordered_icons(categories, category_widths):
         if icon == "spacer":
             path = os.path.join(base_path, "spacer.svg")
         else:
@@ -46,24 +46,36 @@ def display_icon_legend(icons_present=None, icon_size=50):
             cols[i].image(icon_path, width=icon_size)
             cols[i].caption(label)
 
-def get_icons_from_today(df):
-    today_df = df[df['day_offset'] == 0]
+def get_icons_from_df(df):
     icons_present = set()
-    for categories in today_df['categories']:
+    for categories in df['categories']:
         for cat, icons in categories.items():
             icons_present.update(icons)
     return icons_present
 
+def get_category_widths(day_df):
+    """Maximum number of icons per category for this day."""
+    return {
+        cat: max(len(cats.get(cat, [])) for cats in day_df["categories"])
+        for cat in CATEGORY_ORDER
+    }
+
 def display_hourly_forecast(day_df):
     """Display grouped hourly forecast for a day."""
+    category_widths = get_category_widths(day_df)
+
     for group in group_similar_hours(day_df):
-        if not group: continue
+        if not group:
+            continue
+
         start, end = min(group), max(group)
         time_label = f"**{day_df.iloc[start]['local_time_short'][:2]}-{int(day_df.iloc[end]['local_time_short'][:2])+1:02d}**"
+
         col_left, col_right = st.columns([1, 3])
         col_left.markdown(time_label)
+
         with col_right:
-            display_icons(day_df.iloc[start]['categories'])
+            display_icons(day_df.iloc[start]["categories"], category_widths)
 
 def display_daily_packing(day_df):
     """Display union of icons for a day's packing list."""
@@ -83,7 +95,7 @@ def display_today_forecast(df, with_selectbox=False):
 
     if not with_selectbox:
         display_hourly_forecast(today_df)
-        return
+        return today_df
 
     # Only show future forecast times
     local_tz = today_df['datetime_local'].dt.tz
@@ -106,8 +118,12 @@ def display_today_forecast(df, with_selectbox=False):
     )
     selected_end_time = label_to_endtime[selected_label]
 
-    filtered_df = future_df[future_df['datetime_local'] + timedelta(hours=1) <= selected_end_time]
+    filtered_df = future_df[
+        future_df['datetime_local'] + timedelta(hours=1) <= selected_end_time
+    ]
+
     display_hourly_forecast(filtered_df)
+    return filtered_df
 
 def render_day_expanders(df, render_day_callable):
     """Render a sequence of day expanders for a dataframe."""

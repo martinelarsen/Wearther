@@ -95,12 +95,17 @@ def group_similar_hours(df):
     groups.append(current)
     return groups
 
-def get_ordered_icons(categories):
+def get_ordered_icons(categories, category_widths=None):
     """Order icons by category sequence with spacers."""
     ordered = []
     for cat in CATEGORY_ORDER:
         cat_icons = categories.get(cat, [])
         ordered.extend(cat_icons) 
+
+        if category_widths:
+            ordered.extend(
+                ["spacer"] * (category_widths[cat] - len(cat_icons))
+            )
 
         # Add spacers between certain categories
         if cat == 'coats' and categories.get('accessories'):
