@@ -6,7 +6,7 @@ Instead of showing only rain clouds and temperature symbols, Wearther answers a 
 
 > "What should I wear for the weather today?"
 
-The idea came from the rapidly changing weather in Bergen, Norway, where knowing whether to bring a rain jacket can be more useful than interpreting traditional weather symbols.
+The idea came from the rapidly changing weather in Bergen, where knowing whether to bring an umbrella can be more useful than interpreting traditional weather symbols.
 
 ## Live Demo
 

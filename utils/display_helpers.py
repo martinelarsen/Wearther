@@ -7,8 +7,9 @@ from utils.config import CATEGORY_ORDER
 from utils.config import ICON_CATEGORIES
 from utils.icon_mapping import group_similar_hours, get_ordered_icons
 
-def display_icons(categories, category_widths=None):
+def display_icons(categories, category_widths=None, add_spacers=True):
     """Render icons as images using their category as folder."""
+
     icon_to_category = {}
     for cat, icons in categories.items():
         for icon in icons:
@@ -16,14 +17,25 @@ def display_icons(categories, category_widths=None):
 
     base_path = "icons/"
     icon_paths = []
-    for icon in get_ordered_icons(categories, category_widths):
+
+    for icon in get_ordered_icons(
+        categories,
+        category_widths,
+        add_spacers=add_spacers
+    ):
         if icon == "spacer":
             path = os.path.join(base_path, "spacer.svg")
         else:
             filename = f"{icon}-svgrepo-com.svg"
-            path = os.path.join(base_path, icon_to_category.get(icon), filename)
+            path = os.path.join(
+                base_path,
+                icon_to_category.get(icon),
+                filename
+            )
+
         if os.path.exists(path):
             icon_paths.append(path)
+
     if icon_paths:
         st.image(icon_paths, width=30)
     else:
@@ -100,7 +112,7 @@ def display_today_forecast(df, with_selectbox=False):
     # Only show future forecast times
     local_tz = today_df['datetime_local'].dt.tz
     now = datetime.now(local_tz)
-    future_df = today_df[today_df['datetime_local'] >= now]
+    future_df = today_df[today_df['datetime_local'] + timedelta(hours=1) > now]
     if future_df.empty:
         st.info("No more forecast for today.")
         return

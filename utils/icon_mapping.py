@@ -95,24 +95,28 @@ def group_similar_hours(df):
     groups.append(current)
     return groups
 
-def get_ordered_icons(categories, category_widths=None):
-    """Order icons by category sequence with spacers."""
+def get_ordered_icons(categories, category_widths=None, add_spacers=True):
+    """Order icons by category sequence with optional spacers."""
+
     ordered = []
+
     for cat in CATEGORY_ORDER:
         cat_icons = categories.get(cat, [])
-        ordered.extend(cat_icons) 
+        ordered.extend(cat_icons)
 
-        if category_widths:
+        if add_spacers and category_widths:
             ordered.extend(
                 ["spacer"] * (category_widths[cat] - len(cat_icons))
             )
 
-        # Add spacers between certain categories
-        if cat == 'coats' and categories.get('accessories'):
-            ordered.append('spacer')
-        elif cat == 'accessories' and (categories.get('precipitation') or categories.get('wind')):
-            ordered.append('spacer')
-        elif cat == 'precipitation' and categories.get('wind'):
-            ordered.append('spacer')
+        if add_spacers:
+            if cat == 'coats' and categories.get('accessories'):
+                ordered.append('spacer')
+            elif cat == 'accessories' and (
+                categories.get('precipitation') or categories.get('wind')
+            ):
+                ordered.append('spacer')
+            elif cat == 'precipitation' and categories.get('wind'):
+                ordered.append('spacer')
 
     return ordered

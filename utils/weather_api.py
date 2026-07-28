@@ -46,7 +46,7 @@ def get_forecast_df(lat: float, lon: float) -> pd.DataFrame:
     for entry in timeseries:
         timestamp_str = entry['time'].replace('Z', '+00:00')
         timestamp_utc = datetime.fromisoformat(timestamp_str)
-        if now_utc <= timestamp_utc < end_time:
+        if timestamp_utc < end_time:
             instant = entry['data']['instant']['details']
             next_1h = entry['data'].get('next_1_hours', {})
             forecast_list.append({

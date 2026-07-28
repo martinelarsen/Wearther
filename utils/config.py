@@ -52,7 +52,7 @@ ICON_CATEGORIES = {
         ("umbrella-with-rain-drops", "Umbrella (heavy rain)"),
         ("umbrella-cross", "No Umbrella (dangerous conditions)"),
         ("snowflake", "Snow"),
-        ("snowman", "Heavy snow)"),
+        ("snowman", "Heavy snow"),
     ],
     "Wind": [
         ("wind-face", "Windy"),
