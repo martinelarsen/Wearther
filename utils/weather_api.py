@@ -11,7 +11,7 @@ def geocode_city(city_query: str):
     if not city_query.strip():
         return None
     url = f"https://nominatim.openstreetmap.org/search?q={city_query}&format=json&limit=1"
-    headers = {'User-Agent': 'WeartherApp'}
+    headers = {'User-Agent': 'WeartherApp wearther.fly.dev/ github.com/martinelarsen/Wearther'}
     try:
         response = requests.get(url, headers=headers)
         response.raise_for_status()
@@ -26,7 +26,7 @@ def geocode_city(city_query: str):
 def get_forecast_df(lat: float, lon: float) -> pd.DataFrame:
     """Fetch and process 7-day forecast (hourly) with local times."""
     url = f"https://api.met.no/weatherapi/locationforecast/2.0/compact?lat={lat}&lon={lon}"
-    headers = {'User-Agent': 'WeartherApp'}
+    headers = {'User-Agent': 'WeartherApp wearther.fly.dev/ github.com/martinelarsen/Wearther'}
     try:
         response = requests.get(url, headers=headers)
         response.raise_for_status()
